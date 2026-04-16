@@ -1,7 +1,5 @@
 package com.inventario.stock_flow.product.infrastructure.rest.controller;
 
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +27,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
         Product productToCreate = new Product(
-                UUID.randomUUID(),
+                null,
                 request.name(),
                 request.description(),
                 request.price(),

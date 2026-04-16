@@ -2,8 +2,6 @@ package com.inventario.stock_flow.inventory.infrastructure.adapter.persistence;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.inventario.stock_flow.inventory.domain.model.ProductSupplier;
@@ -29,14 +27,14 @@ public class ProductSupplierPersistenceAdapter implements ProductSupplierReposit
     }
 
     @Override
-    public List<ProductSupplier> findByProductId(UUID productId) {
+    public List<ProductSupplier> findByProductId(Long productId) {
         return jpaRepository.findByProductId(productId).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
-    public Optional<ProductSupplier> findByProductIdAndSupplierId(UUID productId, UUID supplierId) {
+    public Optional<ProductSupplier> findByProductIdAndSupplierId(Long productId, Long supplierId) {
         return jpaRepository.findByProductIdAndSupplierId(productId, supplierId)
                 .map(mapper::toDomain);
     }

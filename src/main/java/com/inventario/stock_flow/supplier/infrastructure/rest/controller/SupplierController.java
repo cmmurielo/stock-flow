@@ -11,8 +11,6 @@ import com.inventario.stock_flow.supplier.infrastructure.rest.dto.SupplierRespon
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +28,7 @@ public class SupplierController {
     public ResponseEntity<SupplierResponse> postMethodName(@Valid @RequestBody SupplierRequest request) {
 
         Supplier supplierToCreate = new Supplier(
-                UUID.randomUUID(),
+                null,
                 request.name(),
                 request.contactEmail(),
                 request.address());

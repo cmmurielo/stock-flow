@@ -2,8 +2,6 @@ package com.inventario.stock_flow.product.infrastructure.adapter.persistence;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.inventario.stock_flow.product.domain.model.Product;
@@ -27,7 +25,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     }
 
     @Override
-    public Optional<Product> findById(UUID id) {
+    public Optional<Product> findById(Long id) {
         return jpaProductRepository.findById(id)
                 .map(ProductMapper::toDomain);
     }

@@ -1,15 +1,14 @@
 package com.inventario.stock_flow.supplier.domain.model;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Supplier {
-    private UUID id;
+    private Long id;
     private String name;
     private String contactEmail;
     private String address;
 
-    public Supplier(UUID id, String name, String contactEmail, String address) {
+    public Supplier(Long id, String name, String contactEmail, String address) {
         this.id = id;
         this.name = name;
         validateEmail(contactEmail);
@@ -17,11 +16,11 @@ public class Supplier {
         this.address = address;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

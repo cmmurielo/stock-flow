@@ -2,8 +2,6 @@ package com.inventario.stock_flow.inventory.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 import com.inventario.stock_flow.product.domain.model.Product;
 import com.inventario.stock_flow.supplier.domain.model.Supplier;
 
@@ -13,7 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ProductSupplier {
-    private final UUID id;
+    private final Long id;
     private final Product product;
     private final Supplier supplier;
     private BigDecimal purchaseCost;

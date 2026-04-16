@@ -2,8 +2,6 @@ package com.inventario.stock_flow.inventory.application.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.inventario.stock_flow.inventory.application.usecase.AssociateSupplierUseCase;
@@ -27,7 +25,7 @@ public class ProductSupplierService implements AssociateSupplierUseCase {
 
     @Override
     @Transactional
-    public ProductSupplier execute(UUID productId, UUID supplierId, BigDecimal cost) {
+    public ProductSupplier execute(Long productId, Long supplierId, BigDecimal cost) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + productId));
 
@@ -40,7 +38,7 @@ public class ProductSupplierService implements AssociateSupplierUseCase {
                     return productSupplierRepository.save(existingLink);
                 })
                 .orElseGet(() -> {
-                    ProductSupplier newLink = new ProductSupplier(UUID.randomUUID(), product, supplier, cost,
+                    ProductSupplier newLink = new ProductSupplier(null, product, supplier, cost,
                             LocalDateTime.now());
                     return productSupplierRepository.save(newLink);
                 });

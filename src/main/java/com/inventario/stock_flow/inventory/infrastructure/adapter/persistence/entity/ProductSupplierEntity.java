@@ -1,11 +1,9 @@
 package com.inventario.stock_flow.inventory.infrastructure.adapter.persistence.entity;
 
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import com.inventario.stock_flow.product.infrastructure.adapter.persistence.entity.ProductEntity;
 import com.inventario.stock_flow.supplier.infrastructure.adapter.persistence.entity.SupplierEntity;
@@ -31,9 +29,8 @@ import lombok.Setter;
 public class ProductSupplierEntity {
 
     @Id
-    @JdbcTypeCode(Types.BINARY)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
