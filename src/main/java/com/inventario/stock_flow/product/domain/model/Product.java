@@ -1,16 +1,14 @@
 package com.inventario.stock_flow.product.domain.model;
 
 import java.math.BigDecimal;
-import java.util.UUID;
-
 public class Product {
-    private UUID id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private Integer stock;
 
-    public Product(UUID id, String name, String description, BigDecimal price, Integer stock) {
+    public Product(Long id, String name, String description, BigDecimal price, Integer stock) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -21,11 +19,11 @@ public class Product {
         this.stock = stock;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

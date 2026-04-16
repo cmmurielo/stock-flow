@@ -1,10 +1,8 @@
 package com.inventario.stock_flow.product.infrastructure.adapter.persistence.entity;
 
 import java.math.BigDecimal;
-import java.sql.Types;
-import java.util.UUID;
-
-import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,9 +21,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductEntity {
     @Id
-    @JdbcTypeCode(Types.BINARY)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String name;

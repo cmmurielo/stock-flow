@@ -2,8 +2,6 @@ package com.inventario.stock_flow.supplier.infrastructure.adapter.persistence;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.inventario.stock_flow.supplier.domain.model.Supplier;
@@ -24,7 +22,7 @@ public class SupplierPersistenceAdapter implements SupplierRepositoryPort {
     }
 
     @Override
-    public Optional<Supplier> findById(UUID id) {
+    public Optional<Supplier> findById(Long id) {
         return jpaRepository.findById(id).map(supplierMapper::toDomain);
     }
 
