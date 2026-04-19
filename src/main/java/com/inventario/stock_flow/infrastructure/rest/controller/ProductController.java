@@ -7,10 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventario.stock_flow.application.usecase.CreateProductUseCase;
+import com.inventario.stock_flow.domain.core.result.DomainError;
+import com.inventario.stock_flow.domain.core.result.Result;
 import com.inventario.stock_flow.domain.model.Product;
 import com.inventario.stock_flow.infrastructure.rest.dto.ProductRequest;
 import com.inventario.stock_flow.infrastructure.rest.dto.ProductResponse;
+import com.inventario.stock_flow.infrastructure.rest.exception.ErrorResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,24 +29,52 @@ public class ProductController {
     private final CreateProductUseCase createProductUseCase;
 
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
-        Product productToCreate = new Product(
+    public ResponseEntity<?> create(
+            @Valid @RequestBody ProductRequest request,
+            HttpServletRequest httpRequest) {
+
+        // 1. Construir y validar el modelo de dominio
+        Result<Product> domainResult = Product.create(
                 null,
                 request.name(),
                 request.description(),
                 request.price(),
                 request.stock());
 
-        Product savedProduct = createProductUseCase.execute(productToCreate);
+        if (domainResult instanceof Result.Failure<Product> f) {
+            return mapError(f.error(), httpRequest.getRequestURI());
+        }
 
-        ProductResponse reponse = new ProductResponse(
-                savedProduct.getId(),
-                savedProduct.getName(),
-                savedProduct.getDescription(),
-                savedProduct.getPrice(),
-                savedProduct.getStock());
+        // 2. Ejecutar el caso de uso (persistencia)
+        Product productToSave = ((Result.Success<Product>) domainResult).value();
+        Result<Product> saveResult = createProductUseCase.execute(productToSave);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(reponse);
+        // 3. Pattern matching sobre el resultado final
+        return switch (saveResult) {
+            case Result.Success<Product> s -> {
+                Product saved = s.value();
+                yield ResponseEntity.status(HttpStatus.CREATED).body(
+                        new ProductResponse(
+                                saved.getId(),
+                                saved.getName(),
+                                saved.getDescription(),
+                                saved.getPrice(),
+                                saved.getStock()));
+            }
+            case Result.Failure<Product> f -> mapError(f.error(), httpRequest.getRequestURI());
+        };
     }
 
+    // ── Helper ────────────────────────────────────────────────────────────────
+
+    private ResponseEntity<ErrorResponse> mapError(DomainError error, String path) {
+        return switch (error) {
+            case DomainError.InvalidPrice e -> ResponseEntity.badRequest()
+                    .body(new ErrorResponse(400, "Domain Error", e.message(), path));
+            case DomainError.InvalidStock e -> ResponseEntity.badRequest()
+                    .body(new ErrorResponse(400, "Domain Error", e.message(), path));
+            default -> ResponseEntity.internalServerError()
+                    .body(new ErrorResponse(500, "Internal Error", error.message(), path));
+        };
+    }
 }
