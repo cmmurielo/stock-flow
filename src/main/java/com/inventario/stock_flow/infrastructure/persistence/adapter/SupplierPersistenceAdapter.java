@@ -37,4 +37,9 @@ public class SupplierPersistenceAdapter implements SupplierRepositoryPort {
                 .map(SupplierMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public boolean existsByDocument(Long document) {
+        return jpaRepository.existsByDocument(document);
+    }
 }

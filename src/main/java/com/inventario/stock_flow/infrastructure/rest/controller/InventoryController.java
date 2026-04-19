@@ -38,7 +38,6 @@ public class InventoryController {
                 request.supplierId(),
                 request.cost());
 
-        // Pattern matching exhaustivo sobre el Result
         return switch (result) {
             case Result.Success<ProductSupplier> s -> {
                 ProductSupplier ps = s.value();
@@ -53,8 +52,6 @@ public class InventoryController {
             case Result.Failure<ProductSupplier> f -> mapError(f.error(), httpRequest.getRequestURI());
         };
     }
-
-    // ── Helper ────────────────────────────────────────────────────────────────
 
     private ResponseEntity<ErrorResponse> mapError(DomainError error, String path) {
         return switch (error) {

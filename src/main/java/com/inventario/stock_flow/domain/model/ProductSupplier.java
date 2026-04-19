@@ -19,12 +19,6 @@ public class ProductSupplier {
     private BigDecimal purchaseCost;
     private LocalDateTime lastUpdate;
 
-    /**
-     * Actualiza el costo de compra del vínculo producto-proveedor.
-     *
-     * @return {@link Result.Success} vacío, o {@link Result.Failure}
-     *         con {@link DomainError.InvalidCost} si el costo es nulo o negativo.
-     */
     public Result<Void> updateCost(BigDecimal newCost) {
         if (newCost == null || newCost.compareTo(BigDecimal.ZERO) < 0) {
             return Result.fail(new DomainError.InvalidCost(

@@ -33,7 +33,6 @@ public class ProductController {
             @Valid @RequestBody ProductRequest request,
             HttpServletRequest httpRequest) {
 
-        // 1. Construir y validar el modelo de dominio
         Result<Product> domainResult = Product.create(
                 null,
                 request.name(),
@@ -41,15 +40,13 @@ public class ProductController {
                 request.price(),
                 request.stock());
 
-        if (domainResult instanceof Result.Failure<Product> f) {
-            return mapError(f.error(), httpRequest.getRequestURI());
+        if (domainResult instanceof Result.Failure<Product>(DomainError error)) {
+            return mapError(error, httpRequest.getRequestURI());
         }
 
-        // 2. Ejecutar el caso de uso (persistencia)
         Product productToSave = ((Result.Success<Product>) domainResult).value();
         Result<Product> saveResult = createProductUseCase.execute(productToSave);
 
-        // 3. Pattern matching sobre el resultado final
         return switch (saveResult) {
             case Result.Success<Product> s -> {
                 Product saved = s.value();
@@ -64,8 +61,6 @@ public class ProductController {
             case Result.Failure<Product> f -> mapError(f.error(), httpRequest.getRequestURI());
         };
     }
-
-    // ── Helper ────────────────────────────────────────────────────────────────
 
     private ResponseEntity<ErrorResponse> mapError(DomainError error, String path) {
         return switch (error) {

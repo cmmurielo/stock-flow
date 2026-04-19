@@ -6,7 +6,8 @@ import com.inventario.stock_flow.infrastructure.persistence.entity.ProductEntity
 public class ProductMapper {
 
     public static ProductEntity toEntity(Product domain) {
-        if (domain == null) return null;
+        if (domain == null)
+            return null;
 
         return new ProductEntity(
                 domain.getId(),
@@ -17,9 +18,9 @@ public class ProductMapper {
     }
 
     public static Product toDomain(ProductEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
 
-        // Usamos reconstitute: los datos vienen de persistencia y ya fueron validados
         return Product.reconstitute(
                 entity.getId(),
                 entity.getName(),

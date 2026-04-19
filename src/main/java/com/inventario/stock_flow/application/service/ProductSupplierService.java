@@ -29,19 +29,16 @@ public class ProductSupplierService implements AssociateSupplierUseCase {
     @Override
     @Transactional
     public Result<ProductSupplier> execute(Long productId, Long supplierId, BigDecimal cost) {
-        // Buscar producto — retorna Failure si no existe
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
             return Result.fail(new DomainError.ProductNotFound(productId));
         }
 
-        // Buscar proveedor — retorna Failure si no existe
         Supplier supplier = supplierRepository.findById(supplierId).orElse(null);
         if (supplier == null) {
             return Result.fail(new DomainError.SupplierNotFound(supplierId));
         }
 
-        // Actualizar vínculo existente o crear uno nuevo
         return productSupplierRepository
                 .findByProductIdAndSupplierId(productId, supplierId)
                 .map(existingLink -> {
