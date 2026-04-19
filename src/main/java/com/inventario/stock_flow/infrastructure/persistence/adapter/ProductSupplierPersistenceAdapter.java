@@ -2,6 +2,7 @@ package com.inventario.stock_flow.infrastructure.persistence.adapter;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.inventario.stock_flow.domain.model.ProductSupplier;
@@ -17,26 +18,24 @@ import lombok.RequiredArgsConstructor;
 public class ProductSupplierPersistenceAdapter implements ProductSupplierRepositoryPort {
 
     private final JpaProductSupplierRepository jpaRepository;
-    private final ProductSupplierMapper mapper;
 
     @Override
     public ProductSupplier save(ProductSupplier productSupplier) {
-        ProductSupplierEntity entity = mapper.toEntity(productSupplier);
-        ProductSupplierEntity savedEntity = jpaRepository.save(entity);
-        return mapper.toDomain(savedEntity);
+        ProductSupplierEntity entity = ProductSupplierMapper.toEntity(productSupplier);
+        ProductSupplierEntity saved = jpaRepository.save(entity);
+        return ProductSupplierMapper.toDomain(saved);
     }
 
     @Override
     public List<ProductSupplier> findByProductId(Long productId) {
         return jpaRepository.findByProductId(productId).stream()
-                .map(mapper::toDomain)
+                .map(ProductSupplierMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<ProductSupplier> findByProductIdAndSupplierId(Long productId, Long supplierId) {
         return jpaRepository.findByProductIdAndSupplierId(productId, supplierId)
-                .map(mapper::toDomain);
+                .map(ProductSupplierMapper::toDomain);
     }
-
 }

@@ -18,15 +18,14 @@ public class ProductMapper {
     }
 
     public static Product toDomain(ProductEntity entity) {
-        if (entity == null) {
+        if (entity == null)
             return null;
-        }
-        return new Product(
+
+        return Product.reconstitute(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
                 entity.getStock());
     }
-
 }

@@ -8,10 +8,9 @@ public record ErrorResponse(
         int status,
         String error,
         String message,
-        String path,
-        Map<String, String> details) {
+        String path) {
 
     public ErrorResponse(int status, String error, String message, String path) {
-        this(LocalDateTime.now(), status, error, message, path, null);
+        this(LocalDateTime.now(), status, error, message, path);
     }
 }

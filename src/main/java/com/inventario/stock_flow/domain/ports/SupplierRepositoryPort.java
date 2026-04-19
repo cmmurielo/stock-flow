@@ -10,4 +10,6 @@ public interface SupplierRepositoryPort {
     Optional<Supplier> findById(Long id);
 
     List<Supplier> findAll();
+
+    boolean existsByDocument(Long document);
 }
