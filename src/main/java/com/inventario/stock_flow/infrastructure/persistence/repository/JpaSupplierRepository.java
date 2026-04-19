@@ -6,4 +6,6 @@ import com.inventario.stock_flow.infrastructure.persistence.entity.SupplierEntit
 
 public interface JpaSupplierRepository extends JpaRepository<SupplierEntity, Long> {
 
+    boolean existsByDocument(Long document);
+
 }

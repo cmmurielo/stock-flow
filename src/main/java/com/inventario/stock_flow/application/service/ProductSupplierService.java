@@ -2,14 +2,17 @@ package com.inventario.stock_flow.application.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import com.inventario.stock_flow.application.usecase.AssociateSupplierUseCase;
-import com.inventario.stock_flow.domain.model.ProductSupplier;
-import com.inventario.stock_flow.domain.ports.ProductSupplierRepositoryPort;
+import com.inventario.stock_flow.domain.core.result.DomainError;
+import com.inventario.stock_flow.domain.core.result.Result;
 import com.inventario.stock_flow.domain.model.Product;
-import com.inventario.stock_flow.domain.ports.ProductRepositoryPort;
+import com.inventario.stock_flow.domain.model.ProductSupplier;
 import com.inventario.stock_flow.domain.model.Supplier;
+import com.inventario.stock_flow.domain.ports.ProductRepositoryPort;
+import com.inventario.stock_flow.domain.ports.ProductSupplierRepositoryPort;
 import com.inventario.stock_flow.domain.ports.SupplierRepositoryPort;
 
 import jakarta.transaction.Transactional;
@@ -25,23 +28,30 @@ public class ProductSupplierService implements AssociateSupplierUseCase {
 
     @Override
     @Transactional
-    public ProductSupplier execute(Long productId, Long supplierId, BigDecimal cost) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + productId));
+    public Result<ProductSupplier> execute(Long productId, Long supplierId, BigDecimal cost) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            return Result.fail(new DomainError.ProductNotFound(productId));
+        }
 
-        Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new IllegalArgumentException("Proveedor no encontrado con ID: " + supplierId));
+        Supplier supplier = supplierRepository.findById(supplierId).orElse(null);
+        if (supplier == null) {
+            return Result.fail(new DomainError.SupplierNotFound(supplierId));
+        }
 
-        return productSupplierRepository.findByProductIdAndSupplierId(productId, supplierId)
+        return productSupplierRepository
+                .findByProductIdAndSupplierId(productId, supplierId)
                 .map(existingLink -> {
-                    existingLink.updateCost(cost);
-                    return productSupplierRepository.save(existingLink);
+                    Result<Void> updateResult = existingLink.updateCost(cost);
+                    if (updateResult instanceof Result.Failure<Void> f) {
+                        return Result.<ProductSupplier>fail(f.error());
+                    }
+                    return Result.ok(productSupplierRepository.save(existingLink));
                 })
                 .orElseGet(() -> {
-                    ProductSupplier newLink = new ProductSupplier(null, product, supplier, cost,
-                            LocalDateTime.now());
-                    return productSupplierRepository.save(newLink);
+                    ProductSupplier newLink = new ProductSupplier(
+                            null, product, supplier, cost, LocalDateTime.now());
+                    return Result.ok(productSupplierRepository.save(newLink));
                 });
     }
-
 }
